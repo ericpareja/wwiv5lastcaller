@@ -143,7 +143,7 @@ int Program::run() {
 	wwiv_path = inir.Get("Main", "WWIV Path", "UNKNOWN");
 	system_name = inir.Get("Main", "BBS Name", "A WWIV BBS");
 	dat_area = inir.Get("Main", "Data Area", "UNKNOWN");
-//        display = inir.Get("Main", "display", "10");
+//      display = inir.Get("Main", "display", "10");
 
 	if (dat_area == "UNKNOWN") {
 		od_printf("`bright red`Data Area must be set in xw5-ilc.ini!\r\n");
@@ -155,10 +155,7 @@ int Program::run() {
 		return -1;
 	}
 	std::filesystem::path fspath(wwiv_path);
-
-
 	const auto& config = new wwiv::sdk::Config(fspath);
-
 
 	if (!config->Load()) {
 		od_printf("`bright red`unable to load config!\r\n");
@@ -166,7 +163,6 @@ int Program::run() {
 	}
  
 	wwiv::sdk::Networks networks(*config);
-
 
 	networks.Load();
 
@@ -205,13 +201,6 @@ int Program::run() {
 			if (lines.size()>6) {
 				struct lastcaller_t* lcline = new struct lastcaller_t();
 				lcline->lastcaller.str("");
-				lcline->user = "UNKNOWN";
-				lcline->bbsname = "Some BBS";
-	                        lcline->currentdate = "";
-	                        lcline->usercity = "";
-				lcline->systemos = "";
-				lcline->bbsaddress = "";
-
 				lcline->user = rot47(lines[1]);
 				lcline->bbsname = rot47(lines[2]);
 	                        lcline->currentdate = rot47(lines[3]);
@@ -219,7 +208,6 @@ int Program::run() {
 	                        lcline->usercity = rot47(lines[5]);
 				lcline->systemos = rot47(lines[6]);
 				lcline->bbsaddress = rot47(lines[7]);
-
 				lastcallers->push_back(lcline);
 			}
 		}
@@ -231,37 +219,16 @@ int Program::run() {
 	}
 	fprintf(fptr, "|#4 InterBBS Last Callers for: fsxNet|#0\n");
         fprintf(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
-        fprintf(fptr,"|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
+        fprintf(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
 //	for (size_t i = (lastcallers->size() - atoi(display.c_str())); i < lastcallers->size(); i++) {
 	for (size_t i = lastcallers->size() - 10; i < lastcallers->size(); i++) {
             fprintf(fptr,"|#7\xB3|#1%-13.13s",lastcallers->at(i)->user.c_str());
-fprintf(fptr,"|#7\xB3|#1%-6.6s",lastcallers->at(i)->currenttime.c_str());
-fprintf(fptr,"|#7\xB3|#1%-8.8s",lastcallers->at(i)->currentdate.c_str());
-fprintf(fptr,"|#7\xB3|#1%24.24s",lastcallers->at(i)->usercity.c_str());
-fprintf(fptr,"|#7\xB3|#1%-22.22s",lastcallers->at(i)->bbsname.c_str());
-fprintf(fptr,"|#7\xBA|#0\r\n");
-
-//		std::vector<std::string> olinesplit = word_wrap(lastcallers->at(i)->lastcaller.str(), 56);
-
-//		fprintf(fptr, "\x1b[1;30m------------------------------------------------------------------------------\r\n");
-/*		for (size_t x = 0; x < olinesplit.size(); x++) {
-			if (x == 0) {
-				fprintf(fptr, "\x1b[1;33m%20.20s\x1b[1;30m: \x1b[1;37m%-56.56s\r\n", lastcallers->at(i)->author.c_str(), olinesplit.at(x).c_str());
-			}
-			else if (x == 1) {
-				fprintf(fptr, "\x1b[1;32m%20.20s\x1b[1;30m: \x1b[1;37m%-56.56s\r\n", lastcallers->at(i)->source.c_str(), olinesplit.at(x).c_str());
-			}
-			else {
-				fprintf(fptr, "                    \x1b[1;30m: \x1b[1;37m%-52.52s\r\n", olinesplit.at(x).c_str());
-			}
-		}
-
-		if (olinesplit.size() == 1) {
-			fprintf(fptr, "\x1b[1;32m%20.20s\x1b[1;30m:\r\n", lastcallers->at(i)->source.c_str());
-		}
-*/
+	    fprintf(fptr,"|#7\xB3|#1%-6.6s",lastcallers->at(i)->currenttime.c_str());
+	    fprintf(fptr,"|#7\xB3|#1%-8.8s",lastcallers->at(i)->currentdate.c_str());
+	    fprintf(fptr,"|#7\xB3|#1%24.24s",lastcallers->at(i)->usercity.c_str());
+	    fprintf(fptr,"|#7\xB3|#1%-22.22s",lastcallers->at(i)->bbsname.c_str());
+	    fprintf(fptr,"|#7\xBA|#0\r\n");
 	}
-//	fprintf(fptr, "\x1b[1;30m------------------------------------------------------------------------------\r\n");
 	fprintf(fptr,"|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
 	fprintf(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
 	fprintf(fptr,"\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
@@ -269,89 +236,5 @@ fprintf(fptr,"|#7\xBA|#0\r\n");
 	fprintf(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
 	fclose(fptr);
 
-	while (true) {
-		od_clr_scr();
-		od_printf("`bright black`+----------------------------------------------------------------------------+\r\n");
-		od_printf("`bright black`|`bright yellow green` InterBBS Oneliners for WWIV!                                               `bright black`|\r\n");
-		od_printf("`bright black`+----------------------------------------------------------------------------+\r\n");
-
-		send_last_x_lines_of_file("ibol.ans", 20);
-
-		od_printf("`bright white`Do you want to (`bright green`A`bright white`)dd a Oneliner (`bright green`V`bright white`)iew all or (`bright red`Q`bright white`)uit..");
-
-		char c = od_get_answer("AaVvQq\r");
-
-		switch (c) {
-		case 'A':
-		case 'a':
-		{
-/*			std::vector<std::string> lines = add_oneliner();
-
-			if (lines.size() > 0) {
-				std::stringstream ss;
-				ss.str("");
-				ss << "Author: " << od_control_get()->user_handle << "\r\n";
-				ss << "Source: " << system_name << "\r\n";
-				for (size_t i = 0; i < lines.size(); i++) {
-					ss << "Oneliner: " << lines.at(i) << "\r\n";
-				}
-
-				auto msg = area->CreateMessage();
-				auto& header = msg.header();
-				auto daten = wwiv::core::DateTime::now();
-				header.set_from_system(0);
-				header.set_from_usernum(od_control_get()->user_num);
-				header.set_title("InterBBS Oneliner");
-				header.set_from(std::string(od_control_get()->user_handle));
-				header.set_to(std::string("IBBS1LINE"));
-				header.set_daten(daten.to_daten_t());
-				msg.set_text(ss.str());
-
-				wwiv::sdk::msgapi::MessageAreaOptions area_options{};
-				area_options.send_post_to_network = true;
-				std::filesystem::path cpath = std::filesystem::current_path();
-				chdir(wwiv_path.c_str());
-				area->AddMessage(msg, area_options);
-				chdir(cpath.c_str());
-
-			}
-			return 0;
-*/
-		}
-		case 'v':
-		case 'V':
-			od_clr_scr();
-			od_printf("`bright black`+----------------------------------------------------------------------------+\r\n");
-			od_printf("`bright black`|`bright yellow green` InterBBS Oneliners for WWIV!                                               `bright black`|\r\n");
-			od_printf("`bright black`+----------------------------------------------------------------------------+\r\n");
-			od_send_file("ibol.ans");
-			od_printf("`bright white`Press any key to continue...");
-			od_get_key(TRUE);
-			od_printf("\r\n");
-			break;
-		default:
-			return 0;
-		}
-	}
 	return 0;
 }
-
-/*
-std::vector<std::string> Program::add_oneliner() {
-	char buffer[53];
-	std::vector<std::string> lines;
-	od_printf("\r\n\r\nPlease enter your oneliner (Blank line ends)....\r\n");
-	while (true) {
-		od_printf("`bright black`: `white`");
-		od_input_str(buffer, 52, 30, 127);
-		if (strlen(buffer) == 0) {
-			break;
-		}
-
-		lines.push_back(std::string(buffer));
-	}
-
-	return lines;
-
-}
-*/
