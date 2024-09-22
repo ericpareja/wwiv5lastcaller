@@ -25,7 +25,7 @@ private:
 	std::string wwiv_path;
 	std::string system_name;
 	std::string dat_area;
-	std::string display;
+	int display;
 //	std::vector<std::string> add_oneliner();
 };
 

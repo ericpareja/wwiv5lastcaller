@@ -143,7 +143,7 @@ int Program::run() {
 	wwiv_path = inir.Get("Main", "WWIV Path", "UNKNOWN");
 	system_name = inir.Get("Main", "BBS Name", "A WWIV BBS");
 	dat_area = inir.Get("Main", "Data Area", "UNKNOWN");
-//      display = inir.Get("Main", "display", "10");
+        display = stoi(inir.Get("Main", "display", "10"));
 
 	if (dat_area == "UNKNOWN") {
 		od_printf("`bright red`Data Area must be set in xw5-ilc.ini!\r\n");
@@ -212,7 +212,7 @@ int Program::run() {
 			}
 		}
 	}
-	
+
 	FILE* fptr = fopen("laston.txt", "wb");
 	if (!fptr) {
 		return -1;
@@ -221,7 +221,7 @@ int Program::run() {
         fprintf(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
         fprintf(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
 //	for (size_t i = (lastcallers->size() - atoi(display.c_str())); i < lastcallers->size(); i++) {
-	for (size_t i = lastcallers->size() - 10; i < lastcallers->size(); i++) {
+	for (size_t i = lastcallers->size() - display; i < lastcallers->size(); i++) {
             fprintf(fptr,"|#7\xB3|#1%-13.13s",lastcallers->at(i)->user.c_str());
 	    fprintf(fptr,"|#7\xB3|#1%-6.6s",lastcallers->at(i)->currenttime.c_str());
 	    fprintf(fptr,"|#7\xB3|#1%-8.8s",lastcallers->at(i)->currentdate.c_str());
