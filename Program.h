@@ -26,6 +26,8 @@ private:
 	std::string system_name;
 	std::string dat_area;
 	int display;
+        std::string bbs_address;
+        int dontshow;
 //	std::vector<std::string> add_oneliner();
 };
 
