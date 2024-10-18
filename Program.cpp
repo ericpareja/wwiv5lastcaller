@@ -17,6 +17,8 @@
 #define _stricmp strcasecmp
 #endif
 
+#define LASTON_TXT "laston.txt"
+
 static wwiv::sdk::subboard_t default_sub(const std::string& fn) {
 	wwiv::sdk::subboard_t sub{};
 	sub.storage_type = 2;
@@ -217,12 +219,12 @@ int Program::run() {
 			}
 		}
 	}
-
-	FILE* fptr = fopen("laston.txt", "wb");
+        auto lastonfile = wwiv::core::FilePath(networks.networks().at(sub.nets[0].net_num).dir,  LASTON_TXT);
+	FILE* fptr = fopen(lastonfile.c_str(), "wb");
 	if (!fptr) {
 		return -1;
 	}
-	fprintf(fptr, "|#4 InterBBS Last Callers for: %s|#0\n",networks.networks().at(sub.nets[0].net_num).name.c_str());
+	fprintf(fptr, "|#4 InterBBS Last Callers for: %s  \n",networks.networks().at(sub.nets[0].net_num).name.c_str());
         fprintf(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
         fprintf(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
 	for (size_t i = lastcallers->size() - display; i < lastcallers->size(); i++) {
