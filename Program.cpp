@@ -224,14 +224,14 @@ int Program::run() {
 	if (!fptr) {
 		return -1;
 	}
-	fprintf(fptr, "|#4 InterBBS Last Callers for: %s  \n",networks.networks().at(sub.nets[0].net_num).name.c_str());
+	fprintf(fptr, "|#4%*sInterBBS Last Callers for: %s%*s\n",25-(networks.networks().at(sub.nets[0].net_num).name.size()/2)," ",networks.networks().at(sub.nets[0].net_num).name.c_str(),27-(networks.networks().at(sub.nets[0].net_num).name.size()/2)-(networks.networks().at(sub.nets[0].net_num).name.size() % 2)," ");
         fprintf(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
         fprintf(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
 	for (size_t i = lastcallers->size() - display; i < lastcallers->size(); i++) {
             fprintf(fptr,"|#7\xB3|#1%-13.13s",lastcallers->at(i)->user.c_str());
 	    fprintf(fptr,"|#7\xB3|#1%-6.6s",lastcallers->at(i)->currenttime.c_str());
 	    fprintf(fptr,"|#7\xB3|#1%-8.8s",lastcallers->at(i)->currentdate.c_str());
-	    fprintf(fptr,"|#7\xB3|#1%24.24s",lastcallers->at(i)->usercity.c_str());
+	    fprintf(fptr,"|#7\xB3|#1%-24.24s",lastcallers->at(i)->usercity.c_str());
 	    fprintf(fptr,"|#7\xB3|#1%-22.22s",lastcallers->at(i)->bbsname.c_str());
 	    fprintf(fptr,"|#7\xBA|#0\r\n");
 //            printf("\r\nDEBUG: User: %s - OS: %s\r\n",lastcallers->at(i)->user.c_str(),lastcallers->at(i)->systemos.c_str());
