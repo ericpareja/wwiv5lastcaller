@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 #endif
     od_init();
 
-    retval = p.run();
+    retval = p.run(1);
     od_exit(retval, FALSE);
 
     return retval;

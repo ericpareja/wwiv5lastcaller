@@ -19,7 +19,7 @@ class Program
 {
 public:
 	Program();
-	int run();
+	int run(int s);
 private:
 	std::vector<struct lastcaller_t *> *lastcallers;
 	std::string wwiv_path;

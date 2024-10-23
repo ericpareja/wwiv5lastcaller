@@ -8,6 +8,7 @@
 #include <sdk/usermanager.h>
 #include <sdk/vardec.h>
 #include <OpenDoor.h>
+#include <fmt/format.h>
 #include "Program.h"
 #include "../inih/cpp/INIReader.h"
 #ifdef _MSC_VER
@@ -137,14 +138,13 @@ Program::Program() {
 	lastcallers = new std::vector<struct lastcaller_t*>();
 }
 
-int Program::run() {
+int Program::run(int s) {
 	INIReader inir("xw5-ilc.ini");
 
 	if (inir.ParseError() != 0) {
 		od_printf("Couldn't parse xw5-ilc.ini!\r\n");
 		return -1;
 	}
-
 	wwiv_path = inir.Get("Main", "WWIV Path", "UNKNOWN");
 	system_name = inir.Get("Main", "BBS Name", "A WWIV BBS");
 	dat_area = inir.Get("Main", "Data Area", "UNKNOWN");
@@ -224,22 +224,22 @@ int Program::run() {
 	if (!fptr) {
 		return -1;
 	}
-	fprintf(fptr, "|#4%*sInterBBS Last Callers for: %s%*s\n",25-(networks.networks().at(sub.nets[0].net_num).name.size()/2)," ",networks.networks().at(sub.nets[0].net_num).name.c_str(),27-(networks.networks().at(sub.nets[0].net_num).name.size()/2)-(networks.networks().at(sub.nets[0].net_num).name.size() % 2)," ");
-        fprintf(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
-        fprintf(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
+	auto title = "InterBBS Last Callers for: " + networks.networks().at(sub.nets[0].net_num).name;
+	fmt::print(fptr,"|#4{:^79}\n",title);
+	fmt::print(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
+	fmt::print(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
 	for (size_t i = lastcallers->size() - display; i < lastcallers->size(); i++) {
-            fprintf(fptr,"|#7\xB3|#1%-13.13s",lastcallers->at(i)->user.c_str());
-	    fprintf(fptr,"|#7\xB3|#1%-6.6s",lastcallers->at(i)->currenttime.c_str());
-	    fprintf(fptr,"|#7\xB3|#1%-8.8s",lastcallers->at(i)->currentdate.c_str());
-	    fprintf(fptr,"|#7\xB3|#1%-24.24s",lastcallers->at(i)->usercity.c_str());
-	    fprintf(fptr,"|#7\xB3|#1%-22.22s",lastcallers->at(i)->bbsname.c_str());
-	    fprintf(fptr,"|#7\xBA|#0\r\n");
-//            printf("\r\nDEBUG: User: %s - OS: %s\r\n",lastcallers->at(i)->user.c_str(),lastcallers->at(i)->systemos.c_str());
+	  fmt::print(fptr,"|#7\xB3|#1{:<13.13}",lastcallers->at(i)->user);
+	  fmt::print(fptr,"|#7\xB3|#1{:<6.6}",lastcallers->at(i)->currenttime);
+	  fmt::print(fptr,"|#7\xB3|#1{:<8.8}",lastcallers->at(i)->currentdate);
+	  fmt::print(fptr,"|#7\xB3|#1{:^24}",lastcallers->at(i)->usercity);
+	  fmt::print(fptr,"|#7\xB3|#1{:<22.22}",lastcallers->at(i)->bbsname);
+	  fmt::print(fptr,"|#7\xBA|#0\r\n");
 	}
-	fprintf(fptr,"|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
-	fprintf(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
-	fprintf(fptr,"\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
-	fprintf(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
+	fmt::print(fptr,"|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+	fmt::print(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
+	fmt::print(fptr,"\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+	fmt::print(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
 	fclose(fptr);
 
 // Finished reading messages and generating lastcallers files for network
@@ -268,13 +268,12 @@ int Program::run() {
 		ss << rot47(wwiv::os::os_version_string().c_str()) << "\r\n";
 		ss << rot47(bbs_address) << "\r\n";
 		ss << ">>> END\r\n\r\nby [wwiv5lastcaller]\r\n" ;
-//		printf("\r\nDEBUG:\r\n%s\r\n", wwiv::os::os_version_string().c_str());
-//		fflush(stdout);
+
 		auto msg = area->CreateMessage();
 		auto& header = msg.header();
 		auto daten = wwiv::core::DateTime::now();
 		header.set_from_system(0);
-		header.set_from_usernum(0);  // was od_control_get()->user_num);
+		header.set_from_usernum(0);
 		header.set_title("ibbslastcall-data");
 		header.set_from("ibbslastcall");
 		header.set_to("All");
@@ -283,7 +282,7 @@ int Program::run() {
 
 		wwiv::sdk::msgapi::MessageAreaOptions area_options{};
 
-		area_options.send_post_to_network = false;
+		area_options.send_post_to_network = true;
 		std::filesystem::path cpath = std::filesystem::current_path();
 		chdir(wwiv_path.c_str());
 		area->AddMessage(msg, area_options);
