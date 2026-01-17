@@ -98,7 +98,7 @@ static void send_last_x_lines_of_file(const char* fname, size_t x) {
 
 	for (size_t i = start; i < lines.size(); i++) {
 		od_disp_emu(lines.at(i).c_str(), true);
-		od_printf("\r\n");
+		od_printf("\n\r");
 	}
 
 	return;
@@ -139,33 +139,33 @@ Program::Program() {
 }
 
 int Program::run(int s) {
-	INIReader inir("xw5-ilc.ini");
+	INIReader inir("wwiv.ini");
 
 	if (inir.ParseError() != 0) {
-		od_printf("Couldn't parse xw5-ilc.ini!\r\n");
+		od_printf("Couldn't parse wwiv.ini!\n\r");
 		return -1;
 	}
-	wwiv_path = inir.Get("Main", "WWIV Path", "UNKNOWN");
-	system_name = inir.Get("Main", "BBS Name", "A WWIV BBS");
-	dat_area = inir.Get("Main", "Data Area", "UNKNOWN");
-        display = stoi(inir.Get("Main", "display", "10"));
-	bbs_address = inir.Get("Main", "BBS Address","wwivbbs.org");
-	dontshow = stoi(inir.Get("Main", "dontshow", "255"));
+	wwiv_path = inir.Get("xw5-ilc", "WWIV Path", "UNKNOWN");
+	system_name = inir.Get("xw5-ilc", "BBS Name", "A WWIV BBS");
+	dat_area = inir.Get("xw5-ilc", "Data Area", "UNKNOWN");
+        display = stoi(inir.Get("xw5-ilc", "display", "10"));
+	bbs_address = inir.Get("xw5-ilc", "BBS Address","wwivbbs.org");
+	dontshow = stoi(inir.Get("xw5-ilc", "dontshow", "255"));
 
 	if (dat_area == "UNKNOWN") {
-		od_printf("`bright red`Data Area must be set in xw5-ilc.ini!\r\n");
+		od_printf("`bright red`Data Area must be set in xw5-ilc.ini!\n\r");
 		return -1;
 	}
 
 	if (wwiv_path == "UNKNOWN") {
-		od_printf("`bright red`WWIV Path must be set in xw5-ilc.ini!\r\n");
+		od_printf("`bright red`WWIV Path must be set in xw5-ilc.ini!\n\r");
 		return -1;
 	}
 	std::filesystem::path fspath(wwiv_path);
 	const auto& config = new wwiv::sdk::Config(fspath);
 
 	if (!config->Load()) {
-		od_printf("`bright red`unable to load config!\r\n");
+		od_printf("`bright red`unable to load config!\n\r");
 		return -1;
 	}
 	wwiv::sdk::Networks networks(*config);
@@ -177,13 +177,29 @@ int Program::run(int s) {
 	wwiv::sdk::Subs subs(config->datadir(), networks.networks());
 
 	if (!subs.Load()) {
-		od_printf("Unable to open subs. \r\n");
+		od_printf("Unable to open subs. \n\r");
+		printf("Unable to open subs. \n\r");
 		return -1;
 	}
+	/*
+	printf("\n\rDAT_AREA=%s\n\r",dat_area.c_str());
+
+        char comma=',';
+	if ( dat_area.find(comma) > 0 ) {
+	  printf("\n\rDat_area.find()=%d\n\r\n\r",dat_area.find(comma));
+	  printf("\n\rConfigured for multiple areas: %s.\n\rCan't handle this yet.\n\r\n\r",dat_area.c_str());
+	  fflush(stdout);
+//	  return -1;
+	}
+*/
+	//	printf("\n\rContinued.\n\r\n\r");
+
 	if (!subs.exists(dat_area)) {
-		od_printf("No such area: %s\r\n", dat_area.c_str());
+		od_printf("No such area: %s\n\r", dat_area.c_str());
+		printf("No such area: %s\n\r", dat_area.c_str());
 		return -1;
 	}
+
 
 	const wwiv::sdk::subboard_t sub = find_sub(subs, dat_area).value_or(default_sub(dat_area));
 	auto x = new wwiv::sdk::msgapi::NullLastReadImpl();
@@ -216,6 +232,7 @@ int Program::run(int s) {
 				lcline->systemos = rot47(lines[6]);
 				lcline->bbsaddress = rot47(lines[7]);
 				lastcallers->push_back(lcline);
+				printf("%s\r",lcline->user);
 			}
 		}
 	}
@@ -225,27 +242,32 @@ int Program::run(int s) {
 		return -1;
 	}
 	auto title = "InterBBS Last Callers for: " + networks.networks().at(sub.nets[0].net_num).name;
-	fmt::print(fptr,"|#4{:^79}\n",title);
-	fmt::print(fptr, "|#7\xB3|#2Name/Handle  |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA\r\n");
-	fmt::print(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\r\n");
+	fmt::print(fptr,"|#4{:^79}\n\r",title);
+	fmt::print(fptr, "|#7\xB3|#2 Name/Handle |#7\xB3|#2 Time |#7\xB3|#2 Date   |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA|#0\n\r");
+	fmt::print(fptr, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6\n\r");
 	for (size_t i = lastcallers->size() - display; i < lastcallers->size(); i++) {
 	  fmt::print(fptr,"|#7\xB3|#1{:<13.13}",lastcallers->at(i)->user);
 	  fmt::print(fptr,"|#7\xB3|#1{:<6.6}",lastcallers->at(i)->currenttime);
 	  fmt::print(fptr,"|#7\xB3|#1{:<8.8}",lastcallers->at(i)->currentdate);
 	  fmt::print(fptr,"|#7\xB3|#1{:^24}",lastcallers->at(i)->usercity);
 	  fmt::print(fptr,"|#7\xB3|#1{:<22.22}",lastcallers->at(i)->bbsname);
-	  fmt::print(fptr,"|#7\xBA|#0\r\n");
+	  fmt::print(fptr,"|#7\xBA|#0\n\r");
 	}
 	fmt::print(fptr,"|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
 	fmt::print(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
 	fmt::print(fptr,"\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
-	fmt::print(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
+	fmt::print(fptr,"\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\n\r");
+	//        fmt::print(fptr,"Date/Time: {}\n\r",std::time({}));
 	fclose(fptr);
 
 // Finished reading messages and generating lastcallers files for network
+	od_printf("`GREEN`xw5-ilc: Your SL: %d  DontShow: %d\n\r\n\r\n", od_control_get()->user_security, dontshow);
+	if (od_control_get()->user_security >= dontshow) {
+		od_printf("`RED`xw5-ilc didn't show you on InterBBS LastCallers.\n\r\n\r\n");
+	}
 
 	if (od_control_get()->user_security < dontshow) {
-
+		od_printf("`bright yellow`xw5-ilc showed you on InterBBS LastCallers.\n\r\n\r\n");
 		// load user data given user_num
                 // we needed this for name and location :P
                 wwiv::sdk::User u{};
@@ -254,20 +276,20 @@ int Program::run(int s) {
 		// we post to the same board
 		std::stringstream ss;
 		ss.str("");
-		ss << ">>> BEGIN\r\n";
-		ss << rot47(u.name()) << "\r\n";
-		ss << rot47(system_name) << "\r\n";
+		ss << ">>> BEGIN\n\r";
+		ss << rot47(u.name()) << "\n\r";
+		ss << rot47(system_name) << "\n\r";
                 std::time_t time = std::time({});
                 char dateString[std::size("mm/dd/yy")];
                 char timeString[std::size("00:00pm")];
                 std::strftime(std::data(timeString), std::size(timeString),"%I:%M%P", std::localtime(&time));
                 std::strftime(std::data(dateString), std::size(dateString),"%m/%d/%y", std::localtime(&time));
-                ss << rot47(dateString) << "\r\n";
-		ss << rot47(timeString) << "\r\n";
-		ss << rot47(u.city()) << "\r\n";
-		ss << rot47(wwiv::os::os_version_string().c_str()) << "\r\n";
-		ss << rot47(bbs_address) << "\r\n";
-		ss << ">>> END\r\n\r\nby [wwiv5lastcaller]\r\n" ;
+                ss << rot47(dateString) << "\n\r";
+		ss << rot47(timeString) << "\n\r";
+		ss << rot47(u.city()) << "\n\r";
+		ss << rot47(wwiv::os::os_version_string().c_str()) << "\n\r";
+		ss << rot47(bbs_address) << "\n\r";
+		ss << ">>> END\n\r\n\rby [wwiv5lastcaller]\n\r" ;
 
 		auto msg = area->CreateMessage();
 		auto& header = msg.header();
