@@ -3,6 +3,13 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
+
+namespace wwiv {
+namespace sdk {
+class UserManager;
+}
+}
 
 struct lastcaller_t {
 	std::stringstream lastcaller;
@@ -18,16 +25,16 @@ struct lastcaller_t {
 class Program
 {
 public:
-	Program();
+	Program() = default;
 	int run(int s);
 private:
-	std::vector<struct lastcaller_t *> *lastcallers;
+	std::map<std::string, std::vector<struct lastcaller_t *>> lastcallers;
 	std::string wwiv_path;
 	std::string system_name;
 	std::string dat_area;
-	int display;
+	int display = 10;
         std::string bbs_address;
-        int dontshow;
-//	std::vector<std::string> add_oneliner();
+        int dontshow = 255;
+	std::string create_post_text(wwiv::sdk::UserManager& usermanager);
 };
 
