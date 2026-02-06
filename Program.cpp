@@ -45,10 +45,10 @@ static std::string strip_annoying_stuff(std::string str) {
 		if (str[i] == '\r') {
 			continue;
 		}
-		if (str[i] == '|') {
-			i += 2;
-			continue;
-		}
+		//		if (str[i] == '|') {
+		//	i += 2;
+		//	continue;
+		//}
 		ss << str[i];
 	}
 
