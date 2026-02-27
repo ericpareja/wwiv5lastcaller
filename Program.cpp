@@ -19,6 +19,7 @@
 #endif
 
 #define LASTON_TXT "laston.txt"
+#define FULLLOG_TXT "full.txt"
 
 static wwiv::sdk::subboard_t default_sub(const std::string& fn) {
 	wwiv::sdk::subboard_t sub{};
@@ -45,10 +46,6 @@ static std::string strip_annoying_stuff(std::string str) {
 		if (str[i] == '\r') {
 			continue;
 		}
-		//		if (str[i] == '|') {
-		//	i += 2;
-		//	continue;
-		//}
 		ss << str[i];
 	}
 
@@ -262,6 +259,7 @@ int Program::run(int s) {
 					}
 				}
 
+
 				if (lines.size() > 6) {
 					struct lastcaller_t* lcline = new struct lastcaller_t();
 					lcline->lastcaller.str("");
@@ -269,7 +267,7 @@ int Program::run(int s) {
 					lcline->bbsname = rot47(lines[2]);
 					lcline->currentdate = rot47(lines[3]);
 					lcline->currenttime = rot47(lines[4]);
-					lcline->usercity = lines[5] == "" ? "Unknown" : rot47(lines[5]);
+					lcline->usercity = lines[5] == "" ? "Unknown" : stripcolors(rot47(lines[5]));
 					lcline->systemos = rot47(lines[6]);
 					lcline->bbsaddress = rot47(lines[7]);
 					lastcallers[area_name].push_back(lcline);
@@ -292,34 +290,34 @@ int Program::run(int s) {
 		auto lastonfile = wwiv::core::FilePath(networks.networks().at(sub.nets[0].net_num).dir, LASTON_TXT);
 		FILE* fptr = fopen(lastonfile.c_str(), "wb");
 		if (!fptr) {
-			continue;
+		  continue;
 		}
 		auto networkname = networks.networks().at(sub.nets[0].net_num).name;
 		auto title = "InterBBS Last Callers for: " + networkname;
 		auto print_table = [&](FILE* out) {
-			fmt::print(out, "|#4{:^79}|#0\r\n", title);
-			fmt::print(out, "|#7\xB3|#2 Name/Handle |#7\xB3|#2 Time |#7\xB3|#2 Date   |#7\xB3|#2 City                   |#7\xB3|#2 BBS                  |#7\xBA|#0\r\n");
-			fmt::print(out, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6|#0\r\n");
-
-			size_t start_idx = (lastcallers[area_name].size() > (size_t)display) ? (lastcallers[area_name].size() - (size_t)display) : 0;
-			for (size_t i = start_idx; i < lastcallers[area_name].size(); i++) {
-				fmt::print(out, "|#7\xB3|#1{:<13.13}", lastcallers[area_name].at(i)->user);
-				fmt::print(out, "|#7\xB3|#1{:<6.6}", lastcallers[area_name].at(i)->currenttime);
-				fmt::print(out, "|#7\xB3|#1{:<8.8}", lastcallers[area_name].at(i)->currentdate);
-				fmt::print(out, "|#7\xB3|#1{:^24}", lastcallers[area_name].at(i)->usercity);
-				fmt::print(out, "|#7\xB3|#1{:<22.22}", lastcallers[area_name].at(i)->bbsname);
-				fmt::print(out, "|#7\xBA|#0\r\n");
-			}
-			fmt::print(out, "|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
-			fmt::print(out, "\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
-			fmt::print(out, "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
-			fmt::print(out, "\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
+		  fmt::print(out, "|#4{:^79}|#0\r\n", title);
+		  fmt::print(out, "|#7\xB3|#2 Name/Handle |#7\xB3|#2 Time |#7\xB3|#2  Date  |#7\xB3|#2         City           |#7\xB3|#2 BBS                  |#7\xBA|#0\r\n");
+		  fmt::print(out, "|#7\xC3\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC5\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xC4\xB6|#0\r\n");
+		  size_t start_idx = (lastcallers[area_name].size() > (size_t)display) ? (lastcallers[area_name].size() - (size_t)display) : 0;
+		  for (size_t i = start_idx; i < lastcallers[area_name].size(); i++) {
+		    fmt::print(out, "|#7\xB3|#1{:<13.13}", lastcallers[area_name].at(i)->user);
+		    fmt::print(out, "|#7\xB3|#1{:<6.6}", lastcallers[area_name].at(i)->currenttime);
+		    fmt::print(out, "|#7\xB3|#1{:<8.8}", lastcallers[area_name].at(i)->currentdate);
+		    fmt::print(out, "|#7\xB3|#1{:^24}", lastcallers[area_name].at(i)->usercity);
+		    fmt::print(out, "|#7\xB3|#1{:<22.22}", lastcallers[area_name].at(i)->bbsname);
+		    fmt::print(out, "|#7\xBA|#0\r\n");
+		  }
+		  fmt::print(out, "|#7\xD4\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+		  fmt::print(out, "\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCF");
+		  fmt::print(out, "\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD");
+		  fmt::print(out, "\xCF\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xBC\r\n");
 		};
 
 		print_table(fptr);
 		fclose(fptr);
+		
 		od_printf("`BLUE`xw5-ilc: lastcallers generated for %s.\r\n", networkname.c_str());
-		od_printf("`yellow`%s\r\n",sub.nets[0].stype.c_str());
+		//		od_printf("`yellow`%s\r\n",sub.nets[0].stype.c_str());
 		/*		if (od_control_get()->baud == 0) {
 		 *	print_table(stdout);
 		 * }
@@ -344,13 +342,13 @@ int Program::run(int s) {
 			std::filesystem::path cpath = std::filesystem::current_path();
 			chdir(wwiv_path.c_str());
 			area->AddMessage(msg, area_options);
-			od_printf("`white`Posted to: %s\r\n`normal`",area_name.c_str());
+			//od_printf("`white`Posted to: %s\r\n`normal`",area_name.c_str());
 			chdir(cpath.c_str());
 		}
 	}
 
 	od_printf("`GREEN`xw5-ilc: Your SL: %d  DontShow: %d\r\n\r\n", od_control_get()->user_security, dontshow);
-	if (od_control_get()->user_security >= dontshow || !od_control_get()->baud == 0) {
+	if (od_control_get()->user_security >= dontshow) {
 		od_printf("`RED`xw5-ilc didn't show you on InterBBS LastCallers.\r\n\r\n");
 	}
 	else {

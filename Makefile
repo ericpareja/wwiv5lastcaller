@@ -1,6 +1,6 @@
 ODOORS="../OpenDoors"
-WWIVSRC="../wwiv-stock/"
-WWIVBUILD="../wwiv-stock-build/"
+WWIVSRC="../wwiv/"
+WWIVBUILD="../wwiv-build/"
 
 xw5-ilc: main.o Program.o INIReader.o
 	g++ --std=c++17 -o xw5-ilc ../inih/ini.o INIReader.o main.o Program.o $(WWIVBUILD)bbs/libbbs_lib.a $(WWIVBUILD)sdk/libsdk.a $(WWIVBUILD)core/libcore.a $(ODOORS)/libs-Linux/libODoors.a $(WWIVBUILD)vcpkg_installed/x64-linux/lib/libfmt.a
@@ -16,7 +16,4 @@ Program.o: Program.cpp
 
 clean:
 	rm xw5-ilc INIReader.o main.o Program.o
-
-push: xw5-ilc
-	scp xw5-ilc bbs:
 
