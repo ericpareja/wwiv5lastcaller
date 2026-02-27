@@ -17,7 +17,7 @@ INSTALLING
 path. This is usually /home/wwiv/.
 
 2) In your wwiv.ini file, add a section as follows:
-``wwiv.ini
+```
 [xw5-ilc]
 WWIV Path = /home/wwiv
 BBS Name = WWIV BBS
@@ -25,7 +25,7 @@ BBS Address = wwivbbs.org
 Data Area = wwivdata
 display = 10
 dontshow = 255
-``
+```
 Adjust to your own settings and taste.
 
 Data Area is the FILENAME of the SUB that carries either the WWIVnet STYPE IBBSDAT or fsxNet Echo Area FSX_DAT.
@@ -47,15 +47,17 @@ BUILDING
 If you want to compile this from sources, you should have a similar
 directory layout as below:
 
+```
 github/wwiv          # WWIV sources
 github/wwiv-build    # WWIV build directory
 github/inih          # INI Reader
 github/OpenDoors     # OpenDoors library
 github/wwiv5lastcaller # this project
+```
 
 To set this up:
 
-``bash
+```bash
 mkdir github
 cd github
 git clone --recurse-submodules https://github.com/wwivbbs/wwiv
@@ -70,7 +72,7 @@ export CPP=g++-12
 ../wwiv/cmake-config.sh
 cmake --build . -j`nproc`
 cd ../inih
-make inih.o
+make ini.o
 cd ../OpenDoors
 make
 cd wwiv5lastcaller
@@ -83,3 +85,5 @@ Email me: xenos@aliens.ph
 Send me WWIVnet mail: 1@60
 Send me fsxNet netmail: Xenos@21:4/147
                         Eric Pareja@21:4/147
+
+https://github.com/ericpareja/wwiv5lastcaller
