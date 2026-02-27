@@ -80,10 +80,13 @@ make
 ```
 
 This utility was inspired by xqtr's ilc for MysticBBS.
+xq-ilc123 in https://github.com/xqtr/bbs_mods
 
-Email me: xenos@aliens.ph
+```
+Email me: xenos AT aliens.ph
 Send me WWIVnet mail: 1@60
 Send me fsxNet netmail: Xenos@21:4/147
                         Eric Pareja@21:4/147
+```
 
 https://github.com/ericpareja/wwiv5lastcaller
