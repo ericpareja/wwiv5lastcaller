@@ -303,7 +303,7 @@ int Program::run(int s) {
 		    fmt::print(out, "|#7\xB3|#1{:<13.13}", lastcallers[area_name].at(i)->user);
 		    fmt::print(out, "|#7\xB3|#1{:<6.6}", lastcallers[area_name].at(i)->currenttime);
 		    fmt::print(out, "|#7\xB3|#1{:<8.8}", lastcallers[area_name].at(i)->currentdate);
-		    fmt::print(out, "|#7\xB3|#1{:^24}", lastcallers[area_name].at(i)->usercity);
+		    fmt::print(out, "|#7\xB3|#1{:^24.24}", lastcallers[area_name].at(i)->usercity);
 		    fmt::print(out, "|#7\xB3|#1{:<22.22}", lastcallers[area_name].at(i)->bbsname);
 		    fmt::print(out, "|#7\xBA|#0\r\n");
 		  }
