@@ -82,6 +82,9 @@ make
 This utility was inspired by xqtr's ilc for MysticBBS.
 xq-ilc123 in https://github.com/xqtr/bbs_mods
 
+An earlier implementation I wrote in Python is available in
+https://github.com/ericpareja/xenos-wwiv-utils
+
 ```
 Email me: xenos AT aliens.ph
 Send me WWIVnet mail: 1@60
